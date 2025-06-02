@@ -1,0 +1,26 @@
+Next step sisfo sapras 
+
+Di Dashboard admin:
+1.Belum ada data data yang di pinjem oleh user
+2.Belum ada data data barang yang di kembalikan oleh user
+3.laporan request peminjaman barang user 
+
+
+Di dashboard siswa:
+1.dashboard yang masih kurang bagus
+2.data data barang nya belum tertampil 
+3.masih belum bisa mengajukan req peminjaman barang ke admin
+
+
+susunan rencana nya
+1.ketika user mengajukan peminjaman data barang dan jika admin sudah meng acc dan muncul batas waktu 
+peminjaman barang jika barang telat di kembalikan oleh user maka akan di kenakan denda nya 5k
+
+2.membuat trigerd authen untuk bisa dapat user merequest barang ke admin melalu persetujuan admin
+
+
+
+opsonial 
+1. menambahkan animated ke frontend nya menggunakan fade in fade out 
+2. membuat fitur profile supaya bisa mengedit nama user atau admin atau mengubah password nya kembali
+3.
