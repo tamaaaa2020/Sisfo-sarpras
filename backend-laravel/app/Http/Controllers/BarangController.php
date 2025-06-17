@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
-use App\Models\Kategori;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // ← Tambahkan ini
+use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
 {
@@ -22,8 +21,13 @@ class BarangController extends Controller
             'nama_Barang' => 'required|string|max:255',
             'id_kategori' => 'required|exists:kategori,id_kategori',
             'jumlah' => 'required|integer|min:0',
-            'satuan' => 'required|string|max:50'
+            'satuan' => 'required|string|max:50',
+            'gambar_barang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
+
+        if ($request->hasFile('gambar_barang')) {
+            $validated['gambar_barang'] = $request->file('gambar_barang')->store('uploads/barang', 'public');
+        }
 
         $barang = Barang::create($validated);
 
@@ -41,28 +45,45 @@ class BarangController extends Controller
 
     public function update(Request $request, $id)
     {
+        $barang = Barang::findOrFail($id);
+
         $validated = $request->validate([
             'kode_Barang' => 'sometimes|required|string|max:255|unique:barang,kode_Barang,' . $id . ',id_barang',
             'nama_Barang' => 'sometimes|required|string|max:255',
             'id_kategori' => 'sometimes|required|exists:kategori,id_kategori',
             'jumlah' => 'sometimes|required|integer|min:0',
-            'satuan' => 'sometimes|required|string|max:50'
+            'satuan' => 'sometimes|required|string|max:50',
+            'gambar_barang' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        $barang = Barang::findOrFail($id);
+        if ($request->hasFile('gambar_barang')) {
+            // Hapus gambar lama jika ada
+            if ($barang->gambar_barang && Storage::disk('public')->exists($barang->gambar_barang)) {
+                Storage::disk('public')->delete($barang->gambar_barang);
+            }
+
+            $validated['gambar_barang'] = $request->file('gambar_barang')->store('uploads/barang', 'public');
+        }
+
         $barang->update($validated);
-        return response()->json($barang);
+
+        return response()->json([
+            'message' => 'Barang berhasil diperbarui',
+            'data' => $barang
+        ]);
     }
 
     public function destroy($id)
     {
-        // Hapus dulu data relasi dari barang_popularity
-        DB::table('barang')->where('id_barang', $id)->delete();
+        $barang = Barang::find($id);
 
-        // Lalu hapus barang utama
-        $barang = Barang::where('id_barang', $id)->first();
         if (!$barang) {
             return response()->json(['message' => 'Barang tidak ditemukan'], 404);
+        }
+
+        // Hapus gambar jika ada
+        if ($barang->gambar_barang && Storage::disk('public')->exists($barang->gambar_barang)) {
+            Storage::disk('public')->delete($barang->gambar_barang);
         }
 
         $barang->delete();

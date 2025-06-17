@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_kategori');
             $table->integer('jumlah');
             $table->string('satuan');
+            $table->string('gambar_barang');
             $table->timestamps();
 
             $table->foreign('id_kategori')

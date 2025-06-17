@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -596,16 +596,34 @@ class _DashboardPageState extends State<DashboardPage> {
                                         horizontal: 20,
                                         vertical: 8,
                                       ),
-                                      leading: CircleAvatar(
-                                        backgroundColor: Colors.blue.shade100,
-                                        child: Text(
-                                          barang['nama_Barang']?.substring(0, 1).toUpperCase() ?? 'B',
-                                          style: TextStyle(
-                                            color: Colors.blue.shade800,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
+                                      leading: barang['gambar_barang'] != null
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(20),
+                                              child: CachedNetworkImage(
+                                                imageUrl: barang['gambar_barang'],
+                                                width: 40,
+                                                height: 40,
+                                                fit: BoxFit.cover,
+                                                placeholder: (context, url) => CircleAvatar(
+                                                  backgroundColor: Colors.blue.shade100,
+                                                  child: CircularProgressIndicator(),
+                                                ),
+                                                errorWidget: (context, url, error) => CircleAvatar(
+                                                  backgroundColor: Colors.blue.shade100,
+                                                  child: Icon(Icons.error),
+                                                ),
+                                              ),
+                                            )
+                                          : CircleAvatar(
+                                              backgroundColor: Colors.blue.shade100,
+                                              child: Text(
+                                                barang['nama_Barang']?.substring(0, 1).toUpperCase() ?? 'B',
+                                                style: TextStyle(
+                                                  color: Colors.blue.shade800,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
                                       title: Text(
                                         barang['nama_Barang'] ?? '-',
                                         style: TextStyle(

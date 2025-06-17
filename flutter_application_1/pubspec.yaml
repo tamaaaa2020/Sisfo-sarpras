@@ -12,7 +12,7 @@ dependencies:
   http: ^0.13.5
   shared_preferences: ^2.1.1
   intl: ^0.18.0
-
+  cached_network_image: ^3.2.3  # Tambahkan ini
 
 dev_dependencies:
   flutter_test:
